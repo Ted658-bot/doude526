@@ -1,0 +1,647 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07120e">
+<title>America Football Database</title>
+<style>
+:root {
+  --bg:#07120e;
+  --panel:#101f18;
+  --panel2:#15271e;
+  --green:#21d47a;
+  --muted:#91a99a;
+  --white:#f3fff7;
+  --line:#263b2e;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,sans-serif;
+}
+header {
+  padding:20px 17px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.logo {
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+.logo span {color:var(--green)}
+.tag {
+  color:var(--green);
+  border:1px solid var(--green);
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:10px;
+}
+.hero {
+  padding:32px 18px;
+  background:linear-gradient(130deg,#123a27,#07120e 75%);
+}
+.hero small {color:var(--green);letter-spacing:2px}
+.hero h1 {
+  font-size:34px;
+  line-height:1.1;
+  margin:12px 0;
+}
+.hero p {color:#bdd0c2;line-height:1.6;font-size:13px}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:15px;
+}
+.stat {
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:17px;
+  border-radius:12px;
+}
+.stat strong {
+  display:block;
+  color:var(--green);
+  font-size:25px;
+}
+.stat span {color:var(--muted);font-size:12px}
+main {padding:15px}
+.section-title {
+  font-size:19px;
+  margin:12px 0 15px;
+}
+.search {
+  width:100%;
+  padding:14px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:white;
+  font-size:15px;
+  margin-bottom:12px;
+}
+.filters {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+select,input,button {
+  font-family:inherit;
+}
+.filters select, .form-control {
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  font-size:13px;
+}
+.players {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  margin-top:16px;
+}
+.player {
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+}
+.avatar {
+  width:62px;
+  height:62px;
+  border-radius:10px;
+  background:var(--panel2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  flex-shrink:0;
+}
+.player-info {flex:1;min-width:0}
+.player-info h3 {font-size:15px;margin:0 0 6px}
+.player-info p {
+  font-size:11px;
+  color:var(--muted);
+  margin:4px 0;
+}
+.position {
+  display:inline-block;
+  color:var(--green);
+  font-size:10px;
+  border:1px solid #285b3e;
+  padding:4px 7px;
+  border-radius:20px;
+}
+.view {
+  background:var(--green);
+  color:#06150d;
+  border:0;
+  padding:9px 11px;
+  border-radius:7px;
+  font-weight:bold;
+  font-size:11px;
+}
+button {cursor:pointer}
+.add-section {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:16px;
+  margin:25px 0;
+}
+.add-section input,.add-section select {
+  margin:6px 0 12px;
+}
+.add-section label {
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+}
+.primary {
+  width:100%;
+  padding:14px;
+  background:var(--green);
+  color:#06150d;
+  border:0;
+  border-radius:8px;
+  font-weight:900;
+}
+.secondary {
+  background:var(--panel2);
+  color:white;
+  border:1px solid var(--line);
+  padding:11px;
+  border-radius:8px;
+}
+#profile {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  z-index:10;
+  padding:20px;
+  overflow:auto;
+}
+#profile button {margin:10px 0}
+.profile-card {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:20px;
+  margin-top:20px;
+}
+.profile-avatar {
+  font-size:65px;
+  text-align:center;
+  padding:25px;
+}
+.profile-card h2 {text-align:center}
+.detail {
+  display:flex;
+  justify-content:space-between;
+  padding:13px 0;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+}
+.detail span:last-child {color:var(--green)}
+footer {
+  text-align:center;
+  padding:25px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.8;
+}
+.empty {
+  text-align:center;
+  color:var(--muted);
+  padding:30px 10px;
+}
+.notice {
+  color:#d8bd76;
+  font-size:11px;
+  line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">AFD <span>●</span> AMERICA FOOTBALL DATABASE</div>
+  <div class="tag">V1.0</div>
+</header>
+
+<section class="hero">
+  <small>THE FOOTBALL DATABASE</small>
+  <h1>DISCOVER<br>EVERY PLAYER.</h1>
+  <p>
+    Explore football players across North America,
+    Central America and South America.
+    One platform. All generations.
+  </p>
+</section>
+
+<section class="stats">
+  <div class="stat">
+    <strong id="total">0</strong>
+    <span>Players in database</span>
+  </div>
+  <div class="stat">
+    <strong id="countries">0</strong>
+    <span>Countries represented</span>
+  </div>
+  <div class="stat">
+    <strong>3</strong>
+    <span>American regions</span>
+  </div>
+  <div class="stat">
+    <strong>ALL</strong>
+    <span>Age categories</span>
+  </div>
+</section>
+
+<main>
+  <h2 class="section-title">PLAYER DATABASE ⚽</h2>
+
+  <input
+    class="search"
+    id="search"
+    placeholder="Search player by name..."
+    oninput="render()"
+  >
+
+  <div class="filters">
+    <select id="country" onchange="render()">
+      <option value="">All countries</option>
+    </select>
+
+    <select id="position" onchange="render()">
+      <option value="">All positions</option>
+      <option>Goalkeeper</option>
+      <option>Defender</option>
+      <option>Midfielder</option>
+      <option>Forward</option>
+    </select>
+
+    <select id="age" onchange="render()">
+      <option value="">All ages</option>
+      <option value="U13">U13</option>
+      <option value="U15">U15</option>
+      <option value="U17">U17</option>
+      <option value="U20">U20</option>
+      <option value="Senior">Senior</option>
+    </select>
+
+    <select id="region" onchange="render()">
+      <option value="">All regions</option>
+      <option>North America</option>
+      <option>Central America</option>
+      <option>South America</option>
+    </select>
+  </div>
+
+  <div id="players" class="players"></div>
+
+  <section class="add-section">
+    <h2 class="section-title">ADD A PLAYER +</h2>
+    <p class="notice">
+      Add player information to your local database.
+      Only add information you have permission to publish.
+    </p>
+
+    <form id="addForm">
+      <label>Full name</label>
+      <input class="form-control" id="newName" required
+        placeholder="Player name">
+
+      <label>Country</label>
+      <select class="form-control" id="newCountry" required></select>
+
+      <label>Age</label>
+      <input class="form-control" id="newAge" type="number"
+        min="5" max="60" required placeholder="Player age">
+
+      <label>Position</label>
+      <select class="form-control" id="newPosition">
+        <option>Goalkeeper</option>
+        <option>Defender</option>
+        <option>Midfielder</option>
+        <option>Forward</option>
+      </select>
+
+      <label>Club</label>
+      <input class="form-control" id="newClub"
+        placeholder="Current club">
+
+      <label>Goals</label>
+      <input class="form-control" id="newGoals" type="number"
+        min="0" value="0">
+
+      <label>Assists</label>
+      <input class="form-control" id="newAssists" type="number"
+        min="0" value="0">
+
+      <button class="primary" type="submit">
+        ADD PLAYER TO DATABASE
+      </button>
+    </form>
+  </section>
+</main>
+
+<div id="profile">
+  <button class="secondary" onclick="closeProfile()">← BACK</button>
+  <div id="profileContent"></div>
+</div>
+
+<footer>
+  <strong>AMERICA FOOTBALL DATABASE</strong><br>
+  A platform dedicated to football talent across the Americas.<br>
+  © 2026 AFD — V1.0
+</footer>
+
+<script>
+const countries = {
+  "Haiti":"Central America",
+  "United States":"North America",
+  "Canada":"North America",
+  "Mexico":"North America",
+  "Guatemala":"Central America",
+  "Honduras":"Central America",
+  "El Salvador":"Central America",
+  "Nicaragua":"Central America",
+  "Costa Rica":"Central America",
+  "Panama":"Central America",
+  "Belize":"Central America",
+  "Cuba":"North America",
+  "Jamaica":"North America",
+  "Dominican Republic":"North America",
+  "Trinidad and Tobago":"North America",
+  "Bahamas":"North America",
+  "Barbados":"North America",
+  "Colombia":"South America",
+  "Brazil":"South America",
+  "Argentina":"South America",
+  "Uruguay":"South America",
+  "Chile":"South America",
+  "Peru":"South America",
+  "Ecuador":"South America",
+  "Venezuela":"South America",
+  "Bolivia":"South America",
+  "Paraguay":"South America",
+  "Guyana":"South America",
+  "Suriname":"South America"
+};
+
+const demoPlayers = [
+  {
+    id:1,name:"Alex Demo",country:"Haiti",age:17,
+    position:"Forward",club:"Demo Academy",
+    goals:8,assists:4,emoji:"⚽",demo:true
+  },
+  {
+    id:2,name:"Jordan Sample",country:"United States",age:20,
+    position:"Midfielder",club:"Sample FC",
+    goals:5,assists:7,emoji:"⚽",demo:true
+  },
+  {
+    id:3,name:"Carlos Demo",country:"Brazil",age:24,
+    position:"Defender",club:"Demo Club",
+    goals:2,assists:1,emoji:"⚽",demo:true
+  },
+  {
+    id:4,name:"Luis Sample",country:"Mexico",age:15,
+    position:"Goalkeeper",club:"Sample Academy",
+    goals:0,assists:0,emoji:"🧤",demo:true
+  },
+  {
+    id:5,name:"Mateo Demo",country:"Argentina",age:19,
+    position:"Forward",club:"Demo FC",
+    goals:10,assists:3,emoji:"⚽",demo:true
+  },
+  {
+    id:6,name:"David Sample",country:"Canada",age:13,
+    position:"Midfielder",club:"Sample Youth",
+    goals:3,assists:5,emoji:"⚽",demo:true
+  }
+];
+
+let saved = [];
+try {
+  saved = JSON.parse(localStorage.getItem("afd_players")) || [];
+} catch(e) {
+  saved = [];
+}
+
+let players = [...demoPlayers,...saved];
+
+function getRegion(country) {
+  return countries[country] || "";
+}
+
+function getAgeGroup(age) {
+  if(age < 13) return "U13";
+  if(age < 15) return "U15";
+  if(age < 17) return "U17";
+  if(age < 20) return "U20";
+  return "Senior";
+}
+
+function setupCountries() {
+  const countrySelect = document.getElementById("country");
+  const newCountry = document.getElementById("newCountry");
+
+  Object.keys(countries).forEach(country => {
+    countrySelect.add(new Option(country,country));
+    newCountry.add(new Option(country,country));
+  });
+}
+
+function render() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const country = document.getElementById("country").value;
+  const position = document.getElementById("position").value;
+  const age = document.getElementById("age").value;
+  const region = document.getElementById("region").value;
+
+  const filtered = players.filter(p => {
+    return (
+      p.name.toLowerCase().includes(query) &&
+      (!country || p.country === country) &&
+      (!position || p.position === position) &&
+      (!age || getAgeGroup(p.age) === age) &&
+      (!region || getRegion(p.country) === region)
+    );
+  });
+
+  document.getElementById("total").textContent = players.length;
+  document.getElementById("countries").textContent =
+    new Set(players.map(p=>p.country)).size;
+
+  const container = document.getElementById("players");
+  container.innerHTML = "";
+
+  if(!filtered.length) {
+    container.innerHTML =
+      '<div class="empty">No players found. Try another search.</div>';
+    return;
+  }
+
+  filtered.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "player";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = p.emoji || "⚽";
+
+    const info = document.createElement("div");
+    info.className = "player-info";
+
+    const title = document.createElement("h3");
+    title.textContent = p.name;
+
+    const countryLine = document.createElement("p");
+    countryLine.textContent = "🌎 " + p.country + " · " + p.age + " years";
+
+    const clubLine = document.createElement("p");
+    clubLine.textContent = p.club || "Club not provided";
+
+    const positionTag = document.createElement("span");
+    positionTag.className = "position";
+    positionTag.textContent = p.position;
+
+    if(p.demo) {
+      const demoTag = document.createElement("p");
+      demoTag.textContent = "DEMO PROFILE";
+      demoTag.style.color = "#d8bd76";
+      info.append(title,countryLine,clubLine,positionTag,demoTag);
+    } else {
+      info.append(title,countryLine,clubLine,positionTag);
+    }
+
+    const view = document.createElement("button");
+    view.className = "view";
+    view.textContent = "VIEW";
+    view.onclick = () => openProfile(p.id);
+
+    card.append(avatar,info,view);
+    container.append(card);
+  });
+}
+
+document.getElementById("addForm").addEventListener("submit",function(e) {
+  e.preventDefault();
+
+  const player = {
+    id:Date.now(),
+    name:document.getElementById("newName").value.trim(),
+    country:document.getElementById("newCountry").value,
+    age:Number(document.getElementById("newAge").value),
+    position:document.getElementById("newPosition").value,
+    club:document.getElementById("newClub").value.trim() || "Unknown",
+    goals:Number(document.getElementById("newGoals").value) || 0,
+    assists:Number(document.getElementById("newAssists").value) || 0,
+    emoji:"⚽",
+    demo:false
+  };
+
+  if(!player.name || !countries[player.country] ||
+     player.age < 5 || player.age > 60) {
+    alert("Please enter valid player information.");
+    return;
+  }
+
+  players.push(player);
+  saved.push(player);
+  localStorage.setItem("afd_players",JSON.stringify(saved));
+
+  this.reset();
+  document.getElementById("newGoals").value = 0;
+  document.getElementById("newAssists").value = 0;
+
+  render();
+  alert("Player added successfully!");
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+function openProfile(id) {
+  const p = players.find(x=>x.id===id);
+  if(!p) return;
+
+  const content = document.getElementById("profileContent");
+  content.innerHTML = "";
+
+  const card = document.createElement("div");
+  card.className = "profile-card";
+
+  const avatar = document.createElement("div");
+  avatar.className = "profile-avatar";
+  avatar.textContent = p.emoji || "⚽";
+
+  const name = document.createElement("h2");
+  name.textContent = p.name;
+
+  const subtitle = document.createElement("p");
+  subtitle.style.textAlign = "center";
+  subtitle.style.color = "#91a99a";
+  subtitle.textContent = p.country + " · " + getRegion(p.country);
+
+  card.append(avatar,name,subtitle);
+
+  const details = [
+    ["Age",p.age+" years"],
+    ["Category",getAgeGroup(p.age)],
+    ["Position",p.position],
+    ["Club",p.club],
+    ["Goals",p.goals],
+    ["Assists",p.assists],
+    ["Region",getRegion(p.country)]
+  ];
+
+  details.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "detail";
+    const left = document.createElement("span");
+    left.textContent = item[0];
+    const right = document.createElement("span");
+    right.textContent = item[1];
+    row.append(left,right);
+    card.append(row);
+  });
+
+  if(p.demo) {
+    const note = document.createElement("p");
+    note.className = "notice";
+    note.textContent = "This is a demonstration profile, not verified real-player data.";
+    card.append(note);
+  }
+
+  content.append(card);
+  document.getElementById("profile").style.display = "block";
+}
+
+function closeProfile() {
+  document.getElementById("profile").style.display = "none";
+}
+
+setupCountries();
+render();
+</script>
+
+</body>
+</html>
